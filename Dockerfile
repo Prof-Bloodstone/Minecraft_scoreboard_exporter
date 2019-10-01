@@ -1,9 +1,12 @@
 FROM python:3.7-alpine
 
-ADD requirements.txt ./
+COPY requirements.txt /
 
 RUN pip install -r requirements.txt
 
-ADD mc_NBT_top_scores.py ./
+COPY mc_NBT_top_scores.py entrypoint.sh /
 
-CMD ["python3", "-u", "mc_NBT_top_scores.py"]
+RUN chmod +x /mc_NBT_top_scores.py /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
