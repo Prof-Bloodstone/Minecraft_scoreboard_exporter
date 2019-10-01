@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Extracts top player scores from files written in NBT format.
 Written by Prof_Bloodstone (aka B1o0dy) for use at Near Vanilla server.
