@@ -8,6 +8,10 @@ fi
 
 # If running the script
 if [ "${1}" = 'mc_NBT_top_scores.py' ]; then
+  if [ "$#" -eq 1 ] && [ -f '/config.json' ]; then
+    shift
+    set -- mc_NBT_top_scores.py '--config' '/config.json' "${@}"
+  fi
   exec python3 -u "${@}"
 fi
 
