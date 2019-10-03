@@ -14,6 +14,11 @@ if [ "${1}" = 'mc_NBT_top_scores.py' ]; then
   fi
   if [ -n "${CRON_SCHEDULE:-}" ]; then
     if [ "$(id -u)" == 0 ]; then
+      : "${CRON_USER:=minecraft}"
+      if [ -n "${CRON_ID:-}" ]; then
+        addgroup -g "${CRON_ID}" -S "${CRON_USER}"
+        adduser -u "${CRON_ID}" -S "${CRON_USER}" -G "${CRON_USER}"
+      fi
       printf '%s cd / && python3 -u %s\n' "${CRON_SCHEDULE}" "$(printf "'%s' " "${@}")" | crontab -u "${CRON_USER:-minecraft}" -
       exec crond -f -L /dev/stdout
     else
