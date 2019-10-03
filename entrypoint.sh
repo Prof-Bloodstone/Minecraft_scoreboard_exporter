@@ -1,5 +1,5 @@
-#!/bin/sh
-set -eu
+#!/bin/bash
+set -euo pipefail
 
 # If first argument is a flag, run the script
 if [ "$#" -eq 0 ] || [ "${1#-}" != "${1}" ]; then
@@ -12,7 +12,12 @@ if [ "${1}" = 'mc_NBT_top_scores.py' ]; then
     shift
     set -- mc_NBT_top_scores.py '--config' '/config.json' "${@}"
   fi
-  exec python3 -u "${@}"
+  if [ -n "${CRON_SCHEDULE:-}" ]; then
+    printf '%s python3 -u %s\n' "${CRON_SCHEDULE}" "$(printf "'%s' " "${@}")" | crontab -
+    exec crond -f -L /dev/stdout
+  else
+    exec python3 -u "${@}"
+  fi
 fi
 
 # In case user wants to run something else

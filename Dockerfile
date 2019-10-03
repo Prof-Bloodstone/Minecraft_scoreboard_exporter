@@ -1,5 +1,9 @@
 FROM python:3.7-alpine
 
+RUN apk add --update \
+    bash \
+    && rm -rf /var/cache/apk/*
+
 COPY requirements.txt /
 
 RUN pip install -r requirements.txt
