@@ -16,8 +16,14 @@ if [ "${1}" = 'mc_NBT_top_scores.py' ]; then
     if [ "$(id -u)" == 0 ]; then
       : "${CRON_USER:=minecraft}"
       if [ -n "${CRON_ID:-}" ]; then
-        addgroup -g "${CRON_ID}" -S "${CRON_USER}"
-        adduser -u "${CRON_ID}" -S "${CRON_USER}" -G "${CRON_USER}"
+        if ! grep -q "^${CRON_USER}:" /etc/group; then
+          printf 'Creating new group %s with gid %s\n' "${CRON_USER}" "${CRON_ID}"
+          addgroup -g "${CRON_ID}" -S "${CRON_USER}"
+        fi
+        if ! grep -q "^${CRON_USER}:" /etc/passwd; then
+          printf 'Creating new user %s with gid %s\n' "${CRON_USER}" "${CRON_ID}"
+          adduser -u "${CRON_ID}" -S "${CRON_USER}" -G "${CRON_USER}"
+        fi
       fi
       printf '%s cd / && python3 -u %s\n' "${CRON_SCHEDULE}" "${*@Q}" | crontab -u "${CRON_USER}" -
       exec crond -f -L /dev/stdout
