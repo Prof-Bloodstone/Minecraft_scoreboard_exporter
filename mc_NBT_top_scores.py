@@ -257,7 +257,11 @@ def rchop(thestring, ending):
 
 def get_UUID_with_names(playerdata_folder):
     UUID_name_pairs = []
-    for file in (entry.path for entry in scandir(playerdata_folder) if entry.is_file()):
+    for file in (
+        entry.path
+        for entry in scandir(playerdata_folder)
+        if entry.is_file() and entry.path.endswith(".dat")
+    ):
         basename = os.path.basename(file)
         UUID = rchop(basename, ".dat")
         with create_temp(file) as nbtfile:
