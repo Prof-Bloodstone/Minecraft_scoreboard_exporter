@@ -20,6 +20,7 @@ from copy import deepcopy
 from math import log
 
 from nbt import nbt
+from nbt.nbt import TAG_Short, StructError, TAG_String
 
 if sys.version_info < (3, 5):
     try:
@@ -41,6 +42,19 @@ epsilon = sys.float_info.epsilon
 
 PLAYER_SCORE = namedtuple("PLAYER_SCORE", ["name", "score"])
 COMBINE_OBJ = namedtuple("COMBINE_OBJ", "regex, new_name")
+
+
+# Sometimes the encoded strings seem to not be utf-8
+# So we inject modified function which decodes them as latin-1
+# Contents of this function are taken straight out of the NBT package
+def _TAG_String_patched_parse_buffer(self, buffer):
+    length = TAG_Short(buffer=buffer)
+    read = buffer.read(length.value)
+    if len(read) != length.value:
+        raise StructError()
+    self.value = read.decode("latin-1")
+
+TAG_String._parse_buffer = _TAG_String_patched_parse_buffer
 
 
 def extract_scores(nbtfile):
