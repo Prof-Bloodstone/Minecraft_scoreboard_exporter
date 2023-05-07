@@ -279,8 +279,10 @@ def get_UUID_with_names(playerdata_folder):
         basename = os.path.basename(file)
         UUID = rchop(basename, ".dat")
         with create_temp(file) as nbtfile:
-            playername = str(nbtfile["bukkit"]["lastKnownName"])
-        UUID_name_pairs.append({"UUID": UUID, "lastKnownName": playername})
+            bukkit = nbtfile["bukkit"]
+            playername = str(bukkit["lastKnownName"])
+            online_ts = bukkit["lastPlayed"].value
+        UUID_name_pairs.append({"UUID": UUID, "lastKnownName": playername, "lastPlayed": online_ts})
     return UUID_name_pairs
 
 
