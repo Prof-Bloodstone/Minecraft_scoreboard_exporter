@@ -61,7 +61,7 @@ def extract_scores(nbtfile):
     """Extract scores from nbt file and convert to python format that is easier to work with."""
     objectives = {
         tag["Name"].value: {
-            "DisplayName": json.loads(tag["DisplayName"].value)["text"],
+            "DisplayName": json.loads(tag["DisplayName"].value),
             "scores": [],
         }
         for tag in nbtfile["data"]["Objectives"].tags
